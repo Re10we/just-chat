@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(
-  $ENV{name_project} 
+  $ENV{name_project}
   VERSION 1.0
   LANGUAGES CXX)
 
@@ -25,10 +25,15 @@ qt_wrap_ui(UI_HEADERS ${UI})
 
 add_executable(
   ${PROJECT_NAME}
-  ${UI_HEADERS} src/main.cpp src/Widgets/MainWindow/Source/mainwindow.cpp
+  ${UI_HEADERS}
+  src/main.cpp
+  src/Widgets/MainWindow/Source/mainwindow.cpp
   src/Widgets/MainWindow/Source/mainwindow.h
   src/Lib/Networking/Server.h
-  src/Lib/Networking/Server.cpp)
+  src/Lib/Networking/Server.cpp
+  src/Lib/Networking/Client.h
+  src/Lib/Networking/Client.cpp)
 
-target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
-# target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets)
+target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::Network)
+
