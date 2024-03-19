@@ -4,16 +4,18 @@
 Client::Client(QTcpSocket *Socket, QObject *Parent) : QObject(Parent) {
   this->Socket = std::make_unique<QTcpSocket>(Socket);
 
-  connect(this->Socket.get(), SIGNAL(QAbstractSocket::disconnected), this,
-          SLOT(QObject::deleteLater));
-  connect(this->Socket.get(), SIGNAL(QIDevice::readyRead), this,
-          SLOT(Client::readyRead));
+  connect(this->Socket.get(), &QAbstractSocket::disconnected, this,
+          &QObject::deleteLater);
+  connect(this->Socket.get(), &QIODevice::readyRead, this, &Client::readyRead);
+
+  
+}
+
+void Client::readyRead() {
+  qDebug() << "Client!";
+  while (Socket->canReadLine()) {
+    qDebug() << Socket->readLine();
+  }
 }
 
 Client::~Client() = default;
-
-void Client::readyRead() {
-  while (this->Socket->canReadLine()) {
-    qDebug() << this->Socket->readLine();
-  }
-}
