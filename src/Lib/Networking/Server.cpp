@@ -9,7 +9,7 @@ Server::Server(QObject *Parent) : QObject(Parent) {
           &Server::newConnection);
 }
 
-Server::~Server() = default;
+Server::~Server() { qDebug() << "Server stop!"; }
 
 bool Server::StartServer() const {
   return TcpServer->listen(QHostAddress::Any, 8080);

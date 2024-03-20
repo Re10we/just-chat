@@ -7,8 +7,7 @@ Client::Client(QTcpSocket *Socket, QObject *Parent) : QObject(Parent) {
   connect(this->Socket.get(), &QAbstractSocket::disconnected, this,
           &QObject::deleteLater);
   connect(this->Socket.get(), &QIODevice::readyRead, this, &Client::readyRead);
-
-  
+ 
 }
 
 void Client::readyRead() {
