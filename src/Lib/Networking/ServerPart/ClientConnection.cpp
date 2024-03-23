@@ -3,7 +3,7 @@
 
 ClientConnection::ClientConnection(QTcpSocket *Socket, QObject *Parent)
     : QObject(Parent) {
-  this->Socket = std::make_unique<QTcpSocket>(Socket);
+  this->Socket = std::unique_ptr<QTcpSocket>(Socket);
 
   connect(this->Socket.get(), &QAbstractSocket::disconnected, this,
           &QObject::deleteLater);
@@ -12,10 +12,8 @@ ClientConnection::ClientConnection(QTcpSocket *Socket, QObject *Parent)
 }
 
 void ClientConnection::readyRead() {
-  qDebug() << "Client!";
-  while (Socket->canReadLine()) {
-    qDebug() << Socket->readLine();
-  }
+  qDebug() << "ClientConnection is readyRead!";
+  qDebug() << Socket->readLine();
 }
 
 ClientConnection::~ClientConnection() = default;

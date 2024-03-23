@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "../../../Lib/Networking/ClientPart/Client.h"
 #include <QtWidgets/QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -16,10 +17,13 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
+  void SetClient(Client* NewClient);
+
 private slots:
   void ConnectionBtn_Clicked();
 
 private:
   Ui::MainWindow *ui;
+  std::unique_ptr<Client> ClientSender;
 };
 #endif // MAINWINDOW_H

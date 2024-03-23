@@ -1,8 +1,8 @@
+#include "Lib/Networking/ClientPart/Client.h"
 #include "Lib/Networking/ServerPart/Server.h"
 #include "Widgets/MainWindow/Source/mainwindow.h"
 #include <QApplication>
 #include <QDebug>
-#include <QTcpSocket>
 
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
       qCritical() << "Start server error";
     }
   } else {
-    (new QTcpSocket())->connectToHost(QHostAddress::Any, 8080);
+    w.SetClient(new Client());
     w.show();
   }
 
