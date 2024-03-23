@@ -29,10 +29,10 @@ add_executable(
   src/main.cpp
   src/Widgets/MainWindow/Source/mainwindow.cpp
   src/Widgets/MainWindow/Source/mainwindow.h
-  src/Lib/Networking/Server.h
-  src/Lib/Networking/Server.cpp
-  src/Lib/Networking/Client.h
-  src/Lib/Networking/Client.cpp)
+  src/Lib/Networking/ServerPart/Server.h
+  src/Lib/Networking/ServerPart/Server.cpp
+  src/Lib/Networking/ServerPart/ClientConnection.h
+  src/Lib/Networking/ServerPart/ClientConnection.cpp)
 
 target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::Network)

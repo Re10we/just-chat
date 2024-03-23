@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "ClientConnection.h"
 #include <QObject>
 #include <QTcpServer>
 #include <memory>
@@ -21,4 +22,4 @@ private:
   std::unique_ptr<QTcpServer> TcpServer;
 };
 
-#endif //SERVER_H
+#endif // SERVER_H

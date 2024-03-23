@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "Client.h"
 #include <QDebug>
 
 Server::Server(QObject *Parent) : QObject(Parent) {
@@ -24,5 +23,5 @@ void Server::newConnection() {
   }
 
   qDebug() << "Socket creating...";
-  new Client(socket);
+  new ClientConnection(socket);
 }

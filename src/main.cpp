@@ -1,4 +1,4 @@
-#include "Lib/Networking/Server.h"
+#include "Lib/Networking/ServerPart/Server.h"
 #include "Widgets/MainWindow/Source/mainwindow.h"
 #include <QApplication>
 #include <QDebug>
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
       qCritical() << "Start server error";
     }
   } else {
-    (new QTcpSocket())->connectToHost(QHostAddress::Any,8080);
+    (new QTcpSocket())->connectToHost(QHostAddress::Any, 8080);
     w.show();
   }
 

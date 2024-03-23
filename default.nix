@@ -22,7 +22,7 @@ with import <nixpkgs> {};
     export PATH="${qt6.full}/libexec:$PATH"
     export PATH="${qt6.full}/lib/cmake:$PATH"
     alias b="cmake -S $PROJECT_ROOT -B $PROJECT_ROOT/build && make --directory=$PROJECT_ROOT/build" 
-    alias r="cmake -S $PROJECT_ROOT -B $PROJECT_ROOT/build && make --directory=$PROJECT_ROOT/build && $PROJECT_ROOT/build/$name_project"
-    alias rs="cmake -S $PROJECT_ROOT -B $PROJECT_ROOT/build && make --directory=$PROJECT_ROOT/build && $PROJECT_ROOT/build/$name_project --server"
+    alias r="$PROJECT_ROOT/build/$name_project"
+    alias rs="$PROJECT_ROOT/build/$name_project --server"
    '';
  }
