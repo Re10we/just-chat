@@ -19,6 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(QT REQUIRED COMPONENTS Widgets NAMES Qt6 Qt5)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 set(UI ${CMAKE_CURRENT_LIST_DIR}/src/Widgets/MainWindow/mainwindow.ui)
 qt_wrap_ui(UI_HEADERS ${UI})
@@ -34,7 +35,11 @@ add_executable(
   src/Lib/Networking/ServerPart/ClientConnection.h
   src/Lib/Networking/ServerPart/ClientConnection.cpp
   src/Lib/Networking/ClientPart/Client.h
-  src/Lib/Networking/ClientPart/Client.cpp)
+  src/Lib/Networking/ClientPart/Client.cpp
+  src/Lib/JSON/JsonConcept.h
+  src/Lib/JSON/JsonConcept.cpp
+)
 
-target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(
+  ${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Network)

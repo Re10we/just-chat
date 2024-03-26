@@ -1,6 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "../../JSON/JsonConcept.h"
 #include <QObject>
 #include <QTcpSocket>
 #include <memory>
@@ -13,7 +14,10 @@ public:
          QHostAddress HostAddress = QHostAddress::Any, quint16 Port = 8080);
   ~Client();
 
-  void SubmitMess(QString Massage);
+  void SetName(QString NewNameClient);
+
+private:
+  void SendToServer(QString NameFunc, QList<QVariant> ListArgument);
 
 private:
   std::unique_ptr<QTcpSocket> Socket;

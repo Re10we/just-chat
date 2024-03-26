@@ -10,6 +10,10 @@ Client::Client(QObject *Parent, QHostAddress HostAddress, quint16 Port)
 
 Client::~Client() = default;
 
-void Client::SubmitMess(QString Mess) {
-  this->Socket->write(Mess.toUtf8());
+void Client::SendToServer(QString NameFunc, QList<QVariant> ListArguments) {
+  this->Socket->write(JsonMess::ToSerialize(NameFunc, ListArguments));
+}
+
+void Client::SetName(QString NewNameClient) {
+  this->SendToServer(__func__, QList<QVariant>({NewNameClient}));
 }

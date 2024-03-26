@@ -16,13 +16,13 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::ConnectionBtn_Clicked() {
   if (ui->UserNameLine->text().size() > 2) {
     qDebug() << "Good username!";
-    ClientSender->SubmitMess(QString("Username is: " + ui->UserNameLine->text()));
+    ClientSender->SetName(ui->UserNameLine->text());
   } else {
     ui->ErrorUserNameLabel->setText("Field 'Username' is void");
     ui->ErrorUserNameLabel->setVisible(true);
   }
 }
 
-void MainWindow::SetClient(Client* NewClient) {
+void MainWindow::SetClient(Client *NewClient) {
   this->ClientSender = std::unique_ptr<Client>(NewClient);
 }
