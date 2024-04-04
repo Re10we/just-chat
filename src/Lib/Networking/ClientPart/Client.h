@@ -4,7 +4,7 @@
 #include "../../JSON/JsonConcept.h"
 #include <QObject>
 #include <QTcpSocket>
-#include <memory>
+
 
 class Client : public QObject {
   Q_OBJECT
@@ -15,12 +15,14 @@ public:
   ~Client();
 
   void SetName(QString NewNameClient);
-
+  void SubmitMess(QString Mess);
+  void SearchPartner();
+  
 private:
   void SendToServer(QString NameFunc, QList<QVariant> ListArgument);
 
 private:
-  std::unique_ptr<QTcpSocket> Socket;
+  QTcpSocket* Socket;
 };
 
 #endif // CLIENT_H

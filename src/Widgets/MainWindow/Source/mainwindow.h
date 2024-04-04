@@ -21,9 +21,10 @@ public:
 
 private slots:
   void ConnectionBtn_Clicked();
+  void SubmitLine_ReturnPressed();
 
 private:
   Ui::MainWindow *ui;
-  std::unique_ptr<Client> ClientSender;
+  Client* ClientSender;
 };
 #endif // MAINWINDOW_H

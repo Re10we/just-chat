@@ -4,11 +4,19 @@
 #include "ClientConnection.h"
 #include <QObject>
 #include <QTcpServer>
-#include <memory>
+#include <boost/bimap.hpp>
+
 
 class Server : public QObject {
 
   Q_OBJECT
+
+private:
+  typedef boost::bimap<ClientConnection*, ClientConnection *>
+      ClientConnectionsMapType;
+
+  typedef ClientConnectionsMapType::value_type ValueMapType;
+
 public:
   explicit Server(QObject *Parent = nullptr);
   virtual ~Server();
@@ -16,10 +24,11 @@ public:
   bool StartServer() const;
 
 private slots:
-  void newConnection();
+  void NewConnection();
 
 private:
-  std::unique_ptr<QTcpServer> TcpServer;
+  QTcpServer* TcpServer;
+  ClientConnectionsMapType ClientConnections;
 };
 
 #endif // SERVER_H

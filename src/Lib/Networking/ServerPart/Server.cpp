@@ -1,11 +1,10 @@
 #include "Server.h"
-#include <QDebug>
+#include "src/Lib/Networking/ServerPart/ClientConnection.h"
 
 Server::Server(QObject *Parent) : QObject(Parent) {
-  TcpServer = std::make_unique<QTcpServer>();
+  TcpServer = new QTcpServer();
 
-  connect(TcpServer.get(), &QTcpServer::newConnection, this,
-          &Server::newConnection);
+  connect(TcpServer, &QTcpServer::newConnection, this, &Server::NewConnection);
 }
 
 Server::~Server() { qDebug() << "Server stop!"; }
@@ -14,7 +13,7 @@ bool Server::StartServer() const {
   return TcpServer->listen(QHostAddress::Any, 8080);
 }
 
-void Server::newConnection() {
+void Server::NewConnection() {
 
   QTcpSocket *socket = TcpServer->nextPendingConnection();
   if (!socket) {
@@ -22,6 +21,10 @@ void Server::newConnection() {
     return;
   }
 
-  qDebug() << "Socket creating...";
-  new ClientConnection(socket);
+  auto Client = new ClientConnection(socket);
+
+  ClientConnections.insert(ValueMapType(Client, nullptr));
+
+  connect(Client, &ClientConnection::__SearchPartner,
+          [this]() { qDebug() << "I`m lambda"; });
 }

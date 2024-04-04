@@ -19,12 +19,24 @@ private:
   Q_INVOKABLE void SetName(QList<QVariant> ArgV);
   void __SetName(QString NewName);
 
+  Q_INVOKABLE void SubmitMess(QList<QVariant> ArgV);
+  void __SubmitMess(QString Mess);
+
+public:
+  void SetSocketChatPartner(QTcpSocket *SocketChatPartner);
+  qintptr GetSocketDescriptor() const;
+
+  Q_INVOKABLE void SearchPartner(QList<QVariant> ArgV);
+  Q_SIGNAL void __SearchPartner();
+
 private slots:
   void readyRead();
 
 private:
-  std::unique_ptr<QTcpSocket> Socket;
+  QTcpSocket* Socket;
+  QTcpSocket* SocketChatPartner;
   QMap<QString, QMetaMethod> FnMap;
+  QString NameUser;
 };
 
 #endif // CLIENTCONNECTION_H

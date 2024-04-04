@@ -4,6 +4,10 @@ with import <nixpkgs> {};
   name_project = "just-chat";
   PROJECT_ROOT = builtins.toString ./.;
   
+
+  buildInputs = [
+    boost
+  ];
   
   nativeBuildInputs = [
     pkg-config
@@ -15,6 +19,7 @@ with import <nixpkgs> {};
 
     clang-tools
     gcc
+    gdb
  ];
 
 
