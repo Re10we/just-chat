@@ -22,6 +22,7 @@ public:
 private slots:
   void ConnectionBtn_Clicked();
   void SubmitLine_ReturnPressed();
+  void HandleFoundPartner();
 
 private:
   Ui::MainWindow *ui;

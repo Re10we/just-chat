@@ -39,8 +39,8 @@ void ClientConnection::SearchPartner(QList<QVariant> ArgV) {
   }
 }
 
-qintptr ClientConnection::GetSocketDescriptor() const {
-  return this->Socket->socketDescriptor();
+QTcpSocket* ClientConnection::GetSocket() {
+  return this->Socket;
 }
 
 void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
@@ -63,4 +63,7 @@ void ClientConnection::SubmitMess(QList<QVariant> Argv) {
     // TODO Error
   }
 }
-void ClientConnection::__SubmitMess(QString Mess) {}
+void ClientConnection::__SubmitMess(QString Mess) {
+  this->SocketChatPartner->write("hello World");
+}
+

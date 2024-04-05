@@ -5,7 +5,9 @@
 #include <QObject>
 #include <QTcpServer>
 #include <boost/bimap.hpp>
+#include <QThread>
 
+#define MAX_WAIT 10
 
 class Server : public QObject {
 
@@ -28,6 +30,7 @@ private slots:
 
 private:
   QTcpServer* TcpServer;
+  ClientConnection* ClientReadyToConnect;
   ClientConnectionsMapType ClientConnections;
 };
 

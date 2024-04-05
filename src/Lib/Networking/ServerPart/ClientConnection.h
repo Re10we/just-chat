@@ -24,10 +24,12 @@ private:
 
 public:
   void SetSocketChatPartner(QTcpSocket *SocketChatPartner);
-  qintptr GetSocketDescriptor() const;
+  QTcpSocket* GetSocket();
 
   Q_INVOKABLE void SearchPartner(QList<QVariant> ArgV);
   Q_SIGNAL void __SearchPartner();
+
+  void SendToPartner() const;
 
 private slots:
   void readyRead();

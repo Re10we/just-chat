@@ -2,9 +2,9 @@
 #define CLIENT_H
 
 #include "../../JSON/JsonConcept.h"
+#include <QMetaMethod>
 #include <QObject>
 #include <QTcpSocket>
-
 
 class Client : public QObject {
   Q_OBJECT
@@ -17,12 +17,21 @@ public:
   void SetName(QString NewNameClient);
   void SubmitMess(QString Mess);
   void SearchPartner();
-  
+
+  Q_SIGNAL void isFoundPatner();
+
 private:
   void SendToServer(QString NameFunc, QList<QVariant> ListArgument);
 
+  Q_INVOKABLE void SuccessfullyFoundPartner(QList<QVariant> ArgV);
+  void __SuccessfullyFoundPartner(bool isFound);
+
+private slots:
+  void ReadyRead();
+
 private:
-  QTcpSocket* Socket;
+  QTcpSocket *Socket;
+  QMap<QString, QMetaMethod> FnMap;
 };
 
 #endif // CLIENT_H
