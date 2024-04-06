@@ -23,7 +23,8 @@ private slots:
   void ConnectionBtn_Clicked();
   void SubmitLine_ReturnPressed();
   void HandleFoundPartner();
-
+  void HandleMessFromClient(QString Mess);
+  
 private:
   Ui::MainWindow *ui;
   Client* ClientSender;

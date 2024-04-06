@@ -26,9 +26,29 @@ void ClientConnection::readyRead() {
   QByteArray MessFromClient = Socket->readAll();
   QJsonObject jsonObject = JsonMess::FromSerialize(MessFromClient);
 
+  qDebug() << MessFromClient;
+
   QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
   InvokeFn.invoke(this, Qt::DirectConnection,
                   jsonObject["argv"].toVariant().toList());
+}
+
+QTcpSocket *ClientConnection::GetSocket() { return this->Socket; }
+
+void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
+  this->SocketChatPartner = SocketChatPartner;
+}
+
+QTcpSocket *ClientConnection::GetSocketChatPartner() const {
+  return this->SocketChatPartner;
+}
+
+void ClientConnection::SendToClient(QString NameFunc, QList<QVariant> ArgV) {
+  if (this->SocketChatPartner && this->SocketChatPartner->isValid()) {
+    this->SocketChatPartner->write(JsonMess::ToSerialize(NameFunc, ArgV));
+  } else {
+    // TODO Error
+  }
 }
 
 void ClientConnection::SearchPartner(QList<QVariant> ArgV) {
@@ -39,14 +59,6 @@ void ClientConnection::SearchPartner(QList<QVariant> ArgV) {
   }
 }
 
-QTcpSocket* ClientConnection::GetSocket() {
-  return this->Socket;
-}
-
-void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
-  this->SocketChatPartner = SocketChatPartner;
-}
-
 void ClientConnection::SetName(QList<QVariant> Argv) {
   if (Argv.size() == 1) {
     __SetName(Argv[0].toString());
@@ -54,16 +66,17 @@ void ClientConnection::SetName(QList<QVariant> Argv) {
     // TODO Error
   }
 }
-void ClientConnection::__SetName(QString NewName) { NameUser = NewName; }
+void ClientConnection::__SetName(QString NewName) { ClientName = NewName; }
 
 void ClientConnection::SubmitMess(QList<QVariant> Argv) {
   if (Argv.size() == 1) {
-    __SubmitMess(Argv[0].toString());
+    SubmitMessFromClient(Argv[0].toString());
   } else {
     // TODO Error
   }
 }
-void ClientConnection::__SubmitMess(QString Mess) {
-  this->SocketChatPartner->write("hello World");
-}
 
+void ClientConnection::SubmitMessFromClient(QString Mess) {
+  this->SendToClient(__func__,
+                     QList<QVariant>({QString(ClientName + ": " + Mess)}));
+}

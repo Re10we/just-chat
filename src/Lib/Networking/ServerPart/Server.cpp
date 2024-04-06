@@ -23,21 +23,25 @@ void Server::NewConnection() {
     return;
   }
 
-  auto Client = new ClientConnection(socket);
+  auto Client = new ClientConnection(socket, this);
 
   ClientConnections.insert(ValueMapType(Client, nullptr));
 
   connect(Client, &ClientConnection::__SearchPartner, [Client, this]() {
     if (this->ClientReadyToConnect != nullptr) {
-      Client->SetSocketChatPartner(this->ClientReadyToConnect->GetSocket());
+      auto ClientConnectionObject =
+          ClientConnections.left.find(this->ClientReadyToConnect);
 
-      auto SuccessfullyFoundPartner = [&](QTcpSocket *Socket) {
+      Client->SetSocketChatPartner(this->ClientReadyToConnect->GetSocket());
+      this->ClientReadyToConnect->SetSocketChatPartner(Client->GetSocket());
+
+      auto SuccessfullyFoundPartner = [](QTcpSocket *Socket) {
         Socket->write(JsonMess::ToSerialize("SuccessfullyFoundPartner",
                                             QList<QVariant>(true)));
       };
 
       SuccessfullyFoundPartner(Client->GetSocket());
-      SuccessfullyFoundPartner(this->ClientReadyToConnect->GetSocket());
+      SuccessfullyFoundPartner(Client->GetSocketChatPartner());
 
       this->ClientReadyToConnect = nullptr;
     } else {
