@@ -36,11 +36,18 @@ void ClientConnection::readyRead() {
 QTcpSocket *ClientConnection::GetSocket() { return this->Socket; }
 
 void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
+  this->HistoryOfConections.insert(SocketChatPartner);
+
   this->SocketChatPartner = SocketChatPartner;
 }
 
 QTcpSocket *ClientConnection::GetSocketChatPartner() const {
   return this->SocketChatPartner;
+}
+
+bool ClientConnection::CheckConnectionWithPartner(
+    QTcpSocket *CheckedSocket) const {
+  return HistoryOfConections.contains(CheckedSocket);
 }
 
 void ClientConnection::SendToClient(QString NameFunc, QList<QVariant> ArgV) {
@@ -68,9 +75,9 @@ void ClientConnection::SetName(QList<QVariant> Argv) {
 }
 void ClientConnection::__SetName(QString NewName) { ClientName = NewName; }
 
-void ClientConnection::SubmitMess(QList<QVariant> Argv) {
-  if (Argv.size() == 1) {
-    SubmitMessFromClient(Argv[0].toString());
+void ClientConnection::SubmitMess(QList<QVariant> ArgV) {
+  if (ArgV.size() == 1) {
+    SubmitMessFromClient(ArgV[0].toString());
   } else {
     // TODO Error
   }
@@ -79,4 +86,20 @@ void ClientConnection::SubmitMess(QList<QVariant> Argv) {
 void ClientConnection::SubmitMessFromClient(QString Mess) {
   this->SendToClient(__func__,
                      QList<QVariant>({QString(ClientName + ": " + Mess)}));
+}
+
+void ClientConnection::ExitFromChat(QList<QVariant> ArgV) {
+  if (ArgV.size() == 1) {
+    if (ArgV[0].toBool() == true) {
+      this->SendToClient(__func__, QList<QVariant>({QVariant(false)}));
+    }
+    __ExitFromChat(ArgV[0].toBool());
+  } else {
+    qDebug() << "Error ClientConnection::ExitFromChat()";
+    // TODO Error
+  }
+}
+
+void ClientConnection::__ExitFromChat(bool isIniciator) {
+  this->SetSocketChatPartner(nullptr);
 }

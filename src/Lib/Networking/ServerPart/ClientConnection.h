@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QMetaMethod>
 #include <QObject>
+#include <QSet>
 #include <QTcpSocket>
 
 class ClientConnection : public QObject {
@@ -22,6 +23,9 @@ private:
   Q_INVOKABLE void SubmitMess(QList<QVariant> ArgV);
   void SubmitMessFromClient(QString Mess);
 
+  Q_INVOKABLE void ExitFromChat(QList<QVariant> ArgV);
+  void __ExitFromChat(bool isIniciator);
+
   void SendToClient(QString NameFunc, QList<QVariant> ArgV);
 
 public:
@@ -35,6 +39,8 @@ public:
 
   void SendToPartner() const;
 
+  bool CheckConnectionWithPartner(QTcpSocket *CheckedSocket) const;
+
 private slots:
   void readyRead();
 
@@ -43,6 +49,7 @@ private:
   QTcpSocket *SocketChatPartner;
   QMap<QString, QMetaMethod> FnMap;
   QString ClientName;
+  QSet<QTcpSocket *> HistoryOfConections;
 };
 
 #endif // CLIENTCONNECTION_H

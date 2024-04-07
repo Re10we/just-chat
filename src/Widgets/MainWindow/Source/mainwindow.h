@@ -21,9 +21,13 @@ public:
 
 private slots:
   void ConnectionBtn_Clicked();
+  void ExitChatBtn_Clicked();
+
   void SubmitLine_ReturnPressed();
+  
   void HandleFoundPartner();
   void HandleMessFromClient(QString Mess);
+  void HandleExitFromChat();
   
 private:
   Ui::MainWindow *ui;

@@ -23,29 +23,61 @@ void Server::NewConnection() {
     return;
   }
 
-  auto Client = new ClientConnection(socket, this);
+  auto Client = new ClientConnection(socket);
 
-  ClientConnections.insert(ValueMapType(Client, nullptr));
+  ClientsConnections.insert(Client);
 
   connect(Client, &ClientConnection::__SearchPartner, [Client, this]() {
     if (this->ClientReadyToConnect != nullptr) {
-      auto ClientConnectionObject =
-          ClientConnections.left.find(this->ClientReadyToConnect);
 
-      Client->SetSocketChatPartner(this->ClientReadyToConnect->GetSocket());
-      this->ClientReadyToConnect->SetSocketChatPartner(Client->GetSocket());
+      if (Client->CheckConnectionWithPartner(
+              this->ClientReadyToConnect->GetSocket()) == false) {
 
-      auto SuccessfullyFoundPartner = [](QTcpSocket *Socket) {
-        Socket->write(JsonMess::ToSerialize("SuccessfullyFoundPartner",
-                                            QList<QVariant>(true)));
-      };
+        Client->SetSocketChatPartner(this->ClientReadyToConnect->GetSocket());
+        this->ClientReadyToConnect->SetSocketChatPartner(Client->GetSocket());
 
-      SuccessfullyFoundPartner(Client->GetSocket());
-      SuccessfullyFoundPartner(Client->GetSocketChatPartner());
+        auto SuccessfullyFoundPartner = [](QTcpSocket *Socket) {
+          Socket->write(JsonMess::ToSerialize("SuccessfullyFoundPartner",
+                                              QList<QVariant>(true)));
+        };
 
-      this->ClientReadyToConnect = nullptr;
+        SuccessfullyFoundPartner(Client->GetSocket());
+        SuccessfullyFoundPartner(Client->GetSocketChatPartner());
+
+        this->ClientReadyToConnect = nullptr;
+      } else {
+        for (auto it : ClientsConnections) {
+          if (Client->CheckConnectionWithPartner(it->GetSocket()) == false) {
+
+            Client->SetSocketChatPartner(
+                this->ClientReadyToConnect->GetSocket());
+            this->ClientReadyToConnect->SetSocketChatPartner(
+                Client->GetSocket());
+
+            auto SuccessfullyFoundPartner = [](QTcpSocket *Socket) {
+              Socket->write(JsonMess::ToSerialize("SuccessfullyFoundPartner",
+                                                  QList<QVariant>(true)));
+            };
+
+            SuccessfullyFoundPartner(Client->GetSocket());
+            SuccessfullyFoundPartner(Client->GetSocketChatPartner());
+
+            this->ClientReadyToConnect = nullptr;
+
+            return;
+          }
+        }
+
+        connect(this, &Server::ChangeClientReadyToConnect, [Client, this]() {
+          if (this->ClientReadyToConnect == nullptr) {
+            this->ClientReadyToConnect = Client;
+          }
+        });
+      }
     } else {
       this->ClientReadyToConnect = Client;
+
+      emit ChangeClientReadyToConnect();
     }
   });
 }

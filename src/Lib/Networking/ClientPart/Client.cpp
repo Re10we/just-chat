@@ -26,8 +26,6 @@ void Client::ReadyRead() {
   QByteArray MessFromServer = Socket->readAll();
   QJsonObject jsonObject = JsonMess::FromSerialize(MessFromServer);
 
-  qDebug() << MessFromServer;
-
   QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
   InvokeFn.invoke(this, Qt::DirectConnection,
                   jsonObject["argv"].toVariant().toList());
@@ -73,3 +71,17 @@ void Client::SubmitMessFromClient(QList<QVariant> ArgV) {
 }
 
 void Client::__SubmitMessFromClient(QString Mess) { emit MessFromClient(Mess); }
+
+void Client::StartExitFromChat() { ExitFromChat(QList<QVariant>({QVariant(true)})); }
+
+void Client::ExitFromChat(QList<QVariant> ArgV) {
+  if (ArgV.size() == 1) {
+    this->SendToServer(__func__, ArgV);
+
+    __ExitFromChat(ArgV[0].toBool());
+  } else {
+    // TODO Error
+  }
+}
+
+void Client::__ExitFromChat(bool isIniciator) { emit SignalStartExitFromChat(); }

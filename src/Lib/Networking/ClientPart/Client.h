@@ -16,12 +16,15 @@ public:
 
   void SetName(QString NewNameClient);
   QString GetName() const;
-  
+
+  void StartExitFromChat();
+
   void SubmitMess(QString Mess);
   void SearchPartner();
 
   Q_SIGNAL void isFoundPatner();
   Q_SIGNAL void MessFromClient(QString Mess);
+  Q_SIGNAL void SignalStartExitFromChat();
 
 private:
   void SendToServer(QString NameFunc, QList<QVariant> ListArgument);
@@ -31,6 +34,9 @@ private:
 
   Q_INVOKABLE void SubmitMessFromClient(QList<QVariant> ArgV);
   void __SubmitMessFromClient(QString Mess);
+
+  Q_INVOKABLE void ExitFromChat(QList<QVariant> ArgV);
+  void __ExitFromChat(bool isIniciator);
 
 private slots:
   void ReadyRead();

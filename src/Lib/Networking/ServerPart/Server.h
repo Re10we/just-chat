@@ -4,7 +4,6 @@
 #include "ClientConnection.h"
 #include <QObject>
 #include <QTcpServer>
-#include <boost/bimap.hpp>
 #include <QThread>
 
 #define MAX_WAIT 10
@@ -12,12 +11,6 @@
 class Server : public QObject {
 
   Q_OBJECT
-
-private:
-  typedef boost::bimap<ClientConnection*, ClientConnection *>
-      ClientConnectionsMapType;
-
-  typedef ClientConnectionsMapType::value_type ValueMapType;
 
 public:
   explicit Server(QObject *Parent = nullptr);
@@ -29,9 +22,12 @@ private slots:
   void NewConnection();
 
 private:
-  QTcpServer* TcpServer;
-  ClientConnection* ClientReadyToConnect;
-  ClientConnectionsMapType ClientConnections;
+  Q_SIGNAL void ChangeClientReadyToConnect();
+
+private:
+  QTcpServer *TcpServer;
+  ClientConnection *ClientReadyToConnect;
+  QSet<ClientConnection *> ClientsConnections;
 };
 
 #endif // SERVER_H

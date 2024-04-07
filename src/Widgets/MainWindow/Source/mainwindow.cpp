@@ -7,8 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->ConnectChatBtn, &QAbstractButton::clicked, this,
           &MainWindow::ConnectionBtn_Clicked);
+
   connect(ui->SubmitLine, &QLineEdit::returnPressed, this,
           &MainWindow::SubmitLine_ReturnPressed);
+
+  connect(ui->ExitChat, &QAbstractButton::clicked, this,
+          &MainWindow::ExitChatBtn_Clicked);
 
   ui->ErrorUserNameLabel->setVisible(false);
 }
@@ -24,12 +28,14 @@ void MainWindow::ConnectionBtn_Clicked() {
   }
 }
 
+void MainWindow::ExitChatBtn_Clicked() { ClientSender->StartExitFromChat(); }
+
 void MainWindow::SubmitLine_ReturnPressed() {
   if (ui->SubmitLine->displayText().size() > 0) {
     ClientSender->SubmitMess(ui->SubmitLine->displayText());
 
-    ui->ChatBrowser->append(
-        QString(ClientSender->GetName() + ": " + ui->SubmitLine->displayText()));
+    ui->ChatBrowser->append(QString(ClientSender->GetName() + ": " +
+                                    ui->SubmitLine->displayText()));
 
     ui->SubmitLine->clear();
   }
@@ -45,6 +51,10 @@ void MainWindow::HandleMessFromClient(QString Mess) {
   ui->ChatBrowser->append(Mess);
 }
 
+void MainWindow::HandleExitFromChat() {
+  ui->PagesStacked->setCurrentIndex(ui->PagesStacked->currentIndex() - 1);
+}
+
 void MainWindow::SetClient(Client *NewClient) {
   this->ClientSender = NewClient;
 
@@ -53,4 +63,7 @@ void MainWindow::SetClient(Client *NewClient) {
 
   connect(this->ClientSender, &Client::MessFromClient, this,
           &MainWindow::HandleMessFromClient);
+
+  connect(this->ClientSender, &Client::SignalStartExitFromChat, this,
+          &MainWindow::HandleExitFromChat);
 }

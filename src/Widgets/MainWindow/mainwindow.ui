@@ -146,6 +146,13 @@
         <item>
          <widget class="QLineEdit" name="SubmitLine"/>
         </item>
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QPushButton" name="ExitChat">
+          <property name="text">
+           <string>Exit from chat</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
