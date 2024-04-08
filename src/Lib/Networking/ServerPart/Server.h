@@ -1,12 +1,11 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "../../JSON/JsonConcept.h"
 #include "ClientConnection.h"
 #include <QObject>
 #include <QTcpServer>
 #include <QThread>
-
-#define MAX_WAIT 10
 
 class Server : public QObject {
 
@@ -20,6 +19,7 @@ public:
 
 private slots:
   void NewConnection();
+  void ConnectPartners(ClientConnection *FirstClient, ClientConnection *SecondClient);
 
 private:
   Q_SIGNAL void ChangeClientReadyToConnect();

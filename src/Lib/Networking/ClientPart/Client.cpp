@@ -1,7 +1,6 @@
 #include "Client.h"
 
-Client::Client(QObject *Parent, QHostAddress HostAddress, quint16 Port)
-    : QObject(Parent) {
+Client::Client(QObject *Parent, QHostAddress HostAddress, quint16 Port) : QObject(Parent) {
 
   this->Socket = new QTcpSocket();
 
@@ -9,14 +8,11 @@ Client::Client(QObject *Parent, QHostAddress HostAddress, quint16 Port)
 
   const short StartWithoutInheritedFunc = 5;
 
-  for (int i = StartWithoutInheritedFunc;
-       i < this->staticMetaObject.methodCount(); i++) {
-    this->FnMap.insert(this->staticMetaObject.method(i).name(),
-                       this->staticMetaObject.method(i));
+  for (int i = StartWithoutInheritedFunc; i < this->staticMetaObject.methodCount(); i++) {
+    this->FnMap.insert(this->staticMetaObject.method(i).name(), this->staticMetaObject.method(i));
   }
 
-  connect(this->Socket, &QAbstractSocket::disconnected, this,
-          &QObject::deleteLater);
+  connect(this->Socket, &QAbstractSocket::disconnected, this, &QObject::deleteLater);
   connect(this->Socket, &QIODevice::readyRead, this, &Client::ReadyRead);
 }
 
@@ -27,9 +23,7 @@ void Client::ReadyRead() {
   QJsonObject jsonObject = JsonMess::FromSerialize(MessFromServer);
 
   QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
-  InvokeFn.invoke(this, Qt::DirectConnection,
-                  jsonObject["argv"].toVariant().toList());
-  qDebug() << "Client is readyRead!";
+  InvokeFn.invoke(this, Qt::DirectConnection, jsonObject["argv"].toVariant().toList());
 }
 
 void Client::SendToServer(QString NameFunc, QList<QVariant> ListArguments) {
@@ -44,13 +38,9 @@ void Client::SetName(QString NewNameClient) {
 
 QString Client::GetName() const { return ClientName; }
 
-void Client::SearchPartner() {
-  this->SendToServer(__func__, QList<QVariant>());
-}
+void Client::SearchPartner() { this->SendToServer(__func__, QList<QVariant>()); }
 
-void Client::SubmitMess(QString Mess) {
-  this->SendToServer(__func__, QList<QVariant>({Mess}));
-}
+void Client::SubmitMess(QString Mess) { this->SendToServer(__func__, QList<QVariant>({Mess})); }
 
 void Client::SuccessfullyFoundPartner(QList<QVariant> ArgV) {
   if (ArgV.size() == 1) {

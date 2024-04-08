@@ -1,52 +1,42 @@
 #include "ClientConnection.h"
 
-ClientConnection::ClientConnection(QTcpSocket *Socket, QObject *Parent)
-    : QObject(Parent) {
+ClientConnection::ClientConnection(QTcpSocket *Socket, QObject *Parent) : QObject(Parent) {
   this->Socket = Socket;
 
   const short StartWithoutInheritedFunc = 5;
 
-  for (int i = StartWithoutInheritedFunc;
-       i < this->staticMetaObject.methodCount(); i++) {
-    this->FnMap.insert(this->staticMetaObject.method(i).name(),
-                       this->staticMetaObject.method(i));
+  for (int i = StartWithoutInheritedFunc; i < this->staticMetaObject.methodCount(); i++) {
+    this->FnMap.insert(this->staticMetaObject.method(i).name(), this->staticMetaObject.method(i));
   }
 
-  connect(this->Socket, &QAbstractSocket::disconnected, this,
-          &QObject::deleteLater);
-  connect(this->Socket, &QIODevice::readyRead, this,
-          &ClientConnection::readyRead);
+  connect(this->Socket, &QAbstractSocket::disconnected, this, &QObject::deleteLater);
+  connect(this->Socket, &QIODevice::readyRead, this, &ClientConnection::readyRead);
 }
 
 ClientConnection::~ClientConnection() = default;
 
 void ClientConnection::readyRead() {
-  qDebug() << "ClientConnection is readyRead!";
-
   QByteArray MessFromClient = Socket->readAll();
   QJsonObject jsonObject = JsonMess::FromSerialize(MessFromClient);
 
-  qDebug() << MessFromClient;
-
   QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
-  InvokeFn.invoke(this, Qt::DirectConnection,
-                  jsonObject["argv"].toVariant().toList());
+  InvokeFn.invoke(this, Qt::DirectConnection, jsonObject["argv"].toVariant().toList());
 }
 
 QTcpSocket *ClientConnection::GetSocket() { return this->Socket; }
 
-void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
-  this->HistoryOfConections.insert(SocketChatPartner);
+QString ClientConnection::GetName() const { return this->ClientName; }
 
+void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
+  if (SocketChatPartner != nullptr) {
+    this->HistoryOfConections.insert(SocketChatPartner);
+  }
   this->SocketChatPartner = SocketChatPartner;
 }
 
-QTcpSocket *ClientConnection::GetSocketChatPartner() const {
-  return this->SocketChatPartner;
-}
+QTcpSocket *ClientConnection::GetSocketChatPartner() const { return this->SocketChatPartner; }
 
-bool ClientConnection::CheckConnectionWithPartner(
-    QTcpSocket *CheckedSocket) const {
+bool ClientConnection::CheckConnectionWithPartner(QTcpSocket *CheckedSocket) const {
   return HistoryOfConections.contains(CheckedSocket);
 }
 
@@ -84,8 +74,7 @@ void ClientConnection::SubmitMess(QList<QVariant> ArgV) {
 }
 
 void ClientConnection::SubmitMessFromClient(QString Mess) {
-  this->SendToClient(__func__,
-                     QList<QVariant>({QString(ClientName + ": " + Mess)}));
+  this->SendToClient(__func__, QList<QVariant>({QString(ClientName + ": " + Mess)}));
 }
 
 void ClientConnection::ExitFromChat(QList<QVariant> ArgV) {
@@ -95,11 +84,8 @@ void ClientConnection::ExitFromChat(QList<QVariant> ArgV) {
     }
     __ExitFromChat(ArgV[0].toBool());
   } else {
-    qDebug() << "Error ClientConnection::ExitFromChat()";
     // TODO Error
   }
 }
 
-void ClientConnection::__ExitFromChat(bool isIniciator) {
-  this->SetSocketChatPartner(nullptr);
-}
+void ClientConnection::__ExitFromChat(bool isIniciator) { this->SetSocketChatPartner(nullptr); }

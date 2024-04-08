@@ -1,18 +1,14 @@
-#include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  connect(ui->ConnectChatBtn, &QAbstractButton::clicked, this,
-          &MainWindow::ConnectionBtn_Clicked);
+  connect(ui->ConnectChatBtn, &QAbstractButton::clicked, this, &MainWindow::ConnectionBtn_Clicked);
 
-  connect(ui->SubmitLine, &QLineEdit::returnPressed, this,
-          &MainWindow::SubmitLine_ReturnPressed);
+  connect(ui->SubmitLine, &QLineEdit::returnPressed, this, &MainWindow::SubmitLine_ReturnPressed);
 
-  connect(ui->ExitChat, &QAbstractButton::clicked, this,
-          &MainWindow::ExitChatBtn_Clicked);
+  connect(ui->ExitChat, &QAbstractButton::clicked, this, &MainWindow::ExitChatBtn_Clicked);
 
   ui->ErrorUserNameLabel->setVisible(false);
 }
@@ -34,8 +30,8 @@ void MainWindow::SubmitLine_ReturnPressed() {
   if (ui->SubmitLine->displayText().size() > 0) {
     ClientSender->SubmitMess(ui->SubmitLine->displayText());
 
-    ui->ChatBrowser->append(QString(ClientSender->GetName() + ": " +
-                                    ui->SubmitLine->displayText()));
+    ui->ChatBrowser->append(
+        QString(ClientSender->GetName() + ": " + ui->SubmitLine->displayText()));
 
     ui->SubmitLine->clear();
   }
@@ -47,9 +43,7 @@ void MainWindow::HandleFoundPartner() {
   ui->PagesStacked->setCurrentIndex(ui->PagesStacked->currentIndex() + 1);
 }
 
-void MainWindow::HandleMessFromClient(QString Mess) {
-  ui->ChatBrowser->append(Mess);
-}
+void MainWindow::HandleMessFromClient(QString Mess) { ui->ChatBrowser->append(Mess); }
 
 void MainWindow::HandleExitFromChat() {
   ui->PagesStacked->setCurrentIndex(ui->PagesStacked->currentIndex() - 1);
@@ -58,11 +52,9 @@ void MainWindow::HandleExitFromChat() {
 void MainWindow::SetClient(Client *NewClient) {
   this->ClientSender = NewClient;
 
-  connect(this->ClientSender, &Client::isFoundPatner, this,
-          &MainWindow::HandleFoundPartner);
+  connect(this->ClientSender, &Client::isFoundPatner, this, &MainWindow::HandleFoundPartner);
 
-  connect(this->ClientSender, &Client::MessFromClient, this,
-          &MainWindow::HandleMessFromClient);
+  connect(this->ClientSender, &Client::MessFromClient, this, &MainWindow::HandleMessFromClient);
 
   connect(this->ClientSender, &Client::SignalStartExitFromChat, this,
           &MainWindow::HandleExitFromChat);

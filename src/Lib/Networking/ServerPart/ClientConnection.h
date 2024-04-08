@@ -33,6 +33,7 @@ public:
   QTcpSocket *GetSocketChatPartner() const;
 
   QTcpSocket *GetSocket();
+  QString GetName() const; 
 
   Q_INVOKABLE void SearchPartner(QList<QVariant> ArgV);
   Q_SIGNAL void __SearchPartner();
