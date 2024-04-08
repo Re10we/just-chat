@@ -17,7 +17,7 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::ConnectionBtn_Clicked() {
   if (ui->UserNameLine->text().size() > 2) {
-    ClientSender->SearchPartner();
+    this->ClientSender->SearchPartner();
   } else {
     ui->ErrorUserNameLabel->setText("Field 'Username' is void");
     ui->ErrorUserNameLabel->setVisible(true);
@@ -28,7 +28,7 @@ void MainWindow::ExitChatBtn_Clicked() { ClientSender->StartExitFromChat(); }
 
 void MainWindow::SubmitLine_ReturnPressed() {
   if (ui->SubmitLine->displayText().size() > 0) {
-    ClientSender->SubmitMess(ui->SubmitLine->displayText());
+    this->ClientSender->SubmitMess(ui->SubmitLine->displayText());
 
     ui->ChatBrowser->append(
         QString(ClientSender->GetName() + ": " + ui->SubmitLine->displayText()));
@@ -38,7 +38,7 @@ void MainWindow::SubmitLine_ReturnPressed() {
 }
 
 void MainWindow::HandleFoundPartner() {
-  ClientSender->SetName(ui->UserNameLine->text());
+  this->ClientSender->SetName(ui->UserNameLine->text());
 
   ui->PagesStacked->setCurrentIndex(ui->PagesStacked->currentIndex() + 1);
 }
@@ -46,6 +46,8 @@ void MainWindow::HandleFoundPartner() {
 void MainWindow::HandleMessFromClient(QString Mess) { ui->ChatBrowser->append(Mess); }
 
 void MainWindow::HandleExitFromChat() {
+  ui->ChatBrowser->clear();
+
   ui->PagesStacked->setCurrentIndex(ui->PagesStacked->currentIndex() - 1);
 }
 

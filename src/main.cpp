@@ -11,8 +11,7 @@ int main(int argc, char *argv[]) {
 
   for (int i = 0; i < argc; i++) {
     if (std::string(argv[i]) == "--server" ||
-        std::string(argv[i]) ==
-            "-s") { // if app have a flag `server` - start server without client
+        std::string(argv[i]) == "-s") { // if app have a flag `server` - start server without client
       isServer = true;
     }
   }
@@ -27,6 +26,7 @@ int main(int argc, char *argv[]) {
     }
   } else {
     w.SetClient(new Client());
+
     w.show();
   }
 

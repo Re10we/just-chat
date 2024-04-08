@@ -6,7 +6,7 @@ Client::Client(QObject *Parent, QHostAddress HostAddress, quint16 Port) : QObjec
 
   this->Socket->connectToHost(HostAddress, Port);
 
-  const short StartWithoutInheritedFunc = 5;
+  const int StartWithoutInheritedFunc = 5;
 
   for (int i = StartWithoutInheritedFunc; i < this->staticMetaObject.methodCount(); i++) {
     this->FnMap.insert(this->staticMetaObject.method(i).name(), this->staticMetaObject.method(i));
@@ -20,18 +20,18 @@ Client::~Client() = default;
 
 void Client::ReadyRead() {
   QByteArray MessFromServer = Socket->readAll();
-  QJsonObject jsonObject = JsonMess::FromSerialize(MessFromServer);
+  QJsonObject JsonObject = JsonMess::FromJson(MessFromServer);
 
-  QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
-  InvokeFn.invoke(this, Qt::DirectConnection, jsonObject["argv"].toVariant().toList());
+  QMetaMethod InvokeFn = FnMap[JsonObject["name"].toVariant().toString()];
+  InvokeFn.invoke(this, Qt::DirectConnection, JsonObject["argv"].toVariant().toList());
 }
 
 void Client::SendToServer(QString NameFunc, QList<QVariant> ListArguments) {
-  this->Socket->write(JsonMess::ToSerialize(NameFunc, ListArguments));
+  this->Socket->write(JsonMess::ToJson(NameFunc, ListArguments));
 }
 
 void Client::SetName(QString NewNameClient) {
-  ClientName = NewNameClient;
+  this->ClientName = NewNameClient;
 
   this->SendToServer(__func__, QList<QVariant>({NewNameClient}));
 }
@@ -43,14 +43,14 @@ void Client::SearchPartner() { this->SendToServer(__func__, QList<QVariant>()); 
 void Client::SubmitMess(QString Mess) { this->SendToServer(__func__, QList<QVariant>({Mess})); }
 
 void Client::SuccessfullyFoundPartner(QList<QVariant> ArgV) {
-  if (ArgV.size() == 1) {
-    __SuccessfullyFoundPartner(ArgV[0].toBool());
+  if (ArgV.size() == 0) {
+    __SuccessfullyFoundPartner();
   } else {
     // TODO error
   }
 }
 
-void Client::__SuccessfullyFoundPartner(bool isFound) { emit isFoundPatner(); }
+void Client::__SuccessfullyFoundPartner() { emit isFoundPatner(); }
 
 void Client::SubmitMessFromClient(QList<QVariant> ArgV) {
   if (ArgV.size() == 1) {

@@ -1,10 +1,10 @@
 #include "Server.h"
 
 Server::Server(QObject *Parent) : QObject(Parent) {
-  TcpServer = new QTcpServer();
-  ClientReadyToConnect = nullptr;
+  this->TcpServer = new QTcpServer();
+  this->ClientReadyToConnect = nullptr;
 
-  connect(TcpServer, &QTcpServer::newConnection, this, &Server::NewConnection);
+  connect(this->TcpServer, &QTcpServer::newConnection, this, &Server::NewConnection);
 }
 
 Server::~Server() { qDebug() << "Server stop!"; }
@@ -20,7 +20,7 @@ void Server::NewConnection() {
 
   auto Client = new ClientConnection(socket);
 
-  ClientsConnections.insert(Client);
+  this->ClientsConnections.insert(Client);
 
   connect(Client, &ClientConnection::__SearchPartner, [Client, this]() {
     if (this->ClientReadyToConnect != nullptr) {
@@ -35,7 +35,6 @@ void Server::NewConnection() {
         }
 
         connect(this, &Server::ChangeClientReadyToConnect, [Client, this]() {
-          qDebug() << Client->GetName();
           if (this->ClientReadyToConnect == nullptr) {
             this->ClientReadyToConnect = Client;
           }
@@ -52,7 +51,7 @@ void Server::ConnectPartners(ClientConnection *FirstClient, ClientConnection *Se
   SecondClient->SetSocketChatPartner(FirstClient->GetSocket());
 
   auto SuccessfullyFoundPartner = [](QTcpSocket *Socket) {
-    Socket->write(JsonMess::ToSerialize("SuccessfullyFoundPartner", QList<QVariant>(true)));
+    Socket->write(JsonMess::ToJson("SuccessfullyFoundPartner", QList<QVariant>()));
   };
 
   SuccessfullyFoundPartner(FirstClient->GetSocket());

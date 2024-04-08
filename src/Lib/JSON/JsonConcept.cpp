@@ -1,10 +1,6 @@
 #include "JsonConcept.h"
 
-JsonMess::JsonMess() {}
-
-JsonMess::~JsonMess() = default;
-
-QByteArray JsonMess::ToSerialize(QString FuncName, QList<QVariant> ArgV) {
+QByteArray JsonMess::ToJson(QString FuncName, QList<QVariant> ArgV) {
   QJsonObject JsonObject;
   QJsonArray JsonArr;
 
@@ -18,6 +14,6 @@ QByteArray JsonMess::ToSerialize(QString FuncName, QList<QVariant> ArgV) {
   return (new QJsonDocument(JsonObject))->toJson();
 }
 
-QJsonObject JsonMess::FromSerialize(QByteArray SerializeValue) {
+QJsonObject JsonMess::FromJson(QByteArray SerializeValue) {
   return QJsonDocument::fromJson(SerializeValue).object();
 }

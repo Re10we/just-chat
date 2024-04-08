@@ -3,7 +3,7 @@
 ClientConnection::ClientConnection(QTcpSocket *Socket, QObject *Parent) : QObject(Parent) {
   this->Socket = Socket;
 
-  const short StartWithoutInheritedFunc = 5;
+  const int StartWithoutInheritedFunc = 5;
 
   for (int i = StartWithoutInheritedFunc; i < this->staticMetaObject.methodCount(); i++) {
     this->FnMap.insert(this->staticMetaObject.method(i).name(), this->staticMetaObject.method(i));
@@ -17,10 +17,10 @@ ClientConnection::~ClientConnection() = default;
 
 void ClientConnection::readyRead() {
   QByteArray MessFromClient = Socket->readAll();
-  QJsonObject jsonObject = JsonMess::FromSerialize(MessFromClient);
+  QJsonObject JsonObject = JsonMess::FromJson(MessFromClient);
 
-  QMetaMethod InvokeFn = FnMap[jsonObject["name"].toVariant().toString()];
-  InvokeFn.invoke(this, Qt::DirectConnection, jsonObject["argv"].toVariant().toList());
+  QMetaMethod InvokeFn = FnMap[JsonObject["name"].toVariant().toString()];
+  InvokeFn.invoke(this, Qt::DirectConnection, JsonObject["argv"].toVariant().toList());
 }
 
 QTcpSocket *ClientConnection::GetSocket() { return this->Socket; }
@@ -37,12 +37,12 @@ void ClientConnection::SetSocketChatPartner(QTcpSocket *SocketChatPartner) {
 QTcpSocket *ClientConnection::GetSocketChatPartner() const { return this->SocketChatPartner; }
 
 bool ClientConnection::CheckConnectionWithPartner(QTcpSocket *CheckedSocket) const {
-  return HistoryOfConections.contains(CheckedSocket);
+  return this->HistoryOfConections.contains(CheckedSocket);
 }
 
 void ClientConnection::SendToClient(QString NameFunc, QList<QVariant> ArgV) {
-  if (this->SocketChatPartner && this->SocketChatPartner->isValid()) {
-    this->SocketChatPartner->write(JsonMess::ToSerialize(NameFunc, ArgV));
+  if (this->SocketChatPartner->isValid()) {
+    this->SocketChatPartner->write(JsonMess::ToJson(NameFunc, ArgV));
   } else {
     // TODO Error
   }
@@ -63,7 +63,7 @@ void ClientConnection::SetName(QList<QVariant> Argv) {
     // TODO Error
   }
 }
-void ClientConnection::__SetName(QString NewName) { ClientName = NewName; }
+void ClientConnection::__SetName(QString NewName) { this->ClientName = NewName; }
 
 void ClientConnection::SubmitMess(QList<QVariant> ArgV) {
   if (ArgV.size() == 1) {

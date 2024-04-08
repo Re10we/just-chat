@@ -1,22 +1,16 @@
 #ifndef JSONCONCEPT_H
 #define JSONCONCEPT_H
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 #include <QJsonValue>
-#include <QObject>
 #include <QList>
+#include <QObject>
 
-class JsonMess : public QObject {
-  Q_OBJECT
-
-public:
-  JsonMess();
-  ~JsonMess();
-  
-  QByteArray static ToSerialize(QString FuncName, QList<QVariant> ArgV);
-  QJsonObject static FromSerialize(QByteArray SerializeValue);
-};
+namespace JsonMess {
+QByteArray ToJson(QString FuncName, QList<QVariant> ArgV);
+QJsonObject FromJson(QByteArray SerializeValue);
+} // namespace JsonMess
 
 #endif // JSONCONCEPT_H

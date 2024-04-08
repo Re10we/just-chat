@@ -2,12 +2,8 @@ with import <nixpkgs> {};
  mkShell {
 
   name_project = "just-chat";
-  PROJECT_ROOT = builtins.toString ./.;
-  
+  root_project = builtins.toString ./.;
 
-  buildInputs = [
-    boost
-  ];
   
   nativeBuildInputs = [
     pkg-config
@@ -19,15 +15,14 @@ with import <nixpkgs> {};
 
     clang-tools
     gcc
-    gdb
- ];
+   ];
 
 
   shellHook = ''
     export PATH="${qt6.full}/libexec:$PATH"
     export PATH="${qt6.full}/lib/cmake:$PATH"
-    alias b="cmake -S $PROJECT_ROOT -B $PROJECT_ROOT/build && make --directory=$PROJECT_ROOT/build" 
-    alias r="$PROJECT_ROOT/build/$name_project"
-    alias rs="$PROJECT_ROOT/build/$name_project --server"
+    alias b="cmake -S $root_project -B $root_project/build && make --directory=$root_project/build" 
+    alias r="$root_project/build/$name_project"
+    alias rs="$root_project/build/$name_project --server"
    '';
  }

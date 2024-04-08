@@ -10,8 +10,8 @@ class Client : public QObject {
   Q_OBJECT
 
 public:
-  Client(QObject *Parent = nullptr,
-         QHostAddress HostAddress = QHostAddress::Any, quint16 Port = 8080);
+  Client(QObject *Parent = nullptr, QHostAddress HostAddress = QHostAddress::Any,
+         quint16 Port = 8080);
   ~Client();
 
   void SetName(QString NewNameClient);
@@ -30,7 +30,7 @@ private:
   void SendToServer(QString NameFunc, QList<QVariant> ListArgument);
 
   Q_INVOKABLE void SuccessfullyFoundPartner(QList<QVariant> ArgV);
-  void __SuccessfullyFoundPartner(bool isFound);
+  void __SuccessfullyFoundPartner();
 
   Q_INVOKABLE void SubmitMessFromClient(QList<QVariant> ArgV);
   void __SubmitMessFromClient(QString Mess);

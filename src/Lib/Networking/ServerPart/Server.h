@@ -5,7 +5,6 @@
 #include "ClientConnection.h"
 #include <QObject>
 #include <QTcpServer>
-#include <QThread>
 
 class Server : public QObject {
 
